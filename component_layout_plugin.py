@@ -42,7 +42,8 @@ v5_compat = pcbnew.GetBuildVersion().startswith('5')
 # so leading parens are removed
 # TODO: One day this might be released, and that will break this. But
 # I don't know when, so we'll just have to wait and see...
-use_vector2 = pcbnew.GetBuildVersion().lstrip('(').startswith('6.99')
+#use_vector2 = pcbnew.GetBuildVersion().lstrip('(').startswith('6.99')
+use_vector2 = True
 
 
 if hasattr(wx, "GetLibraryVersionInfo"):
@@ -99,8 +100,8 @@ def get_layout():
         props['flip'] = mod.IsFlipped()
         props['rotation'] = mod.GetOrientationDegrees()
         pos = mod.GetPosition()
-        x = pcbnew.Iu2Millimeter(pos.x)
-        y = pcbnew.Iu2Millimeter(pos.y)
+        x = pcbnew.ToMM(pos.x)
+        y = pcbnew.ToMM(pos.y)
         props['location'] = [x, y]
         # TODO: Store footprint path and name.
         layout["components"][mod.GetReference()] = props
