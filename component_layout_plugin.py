@@ -24,12 +24,7 @@ import logging
 import pcbnew
 import os
 import sys
-import yaml
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
-
+from pprint import pprint
 import os.path
 import traceback
 import wx
@@ -221,7 +216,7 @@ class ImportExportDialog(wx.Dialog):
                 dialogTitle="Select file to import/export part placement",
                 startDirectory=get_project_directory(),
                 initialValue="",
-                fileMask="Part Placement File|*.yaml|All Files|*.*",
+                fileMask="Part Placement File|*.py|All Files|*.*",
                 fileMode=wx.FD_OPEN,
                 size=wx.Size(500, 50)
             )
@@ -275,7 +270,7 @@ class ImportExportDialog(wx.Dialog):
                     import_file_name = os.path.join(get_project_directory(), import_file_name)
                 with open(import_file_name, r"r") as fp:
                     logger.info(f"Importing layout from {import_file_name}")
-                    layout = yaml.load(fp.read(), Loader)
+                    layout = eval(fp.read())
                     apply_layout(layout)
             except Exception as e:
                 debug_dialog(f"Failed to read {import_file_name}!!", e)
@@ -294,7 +289,7 @@ class ImportExportDialog(wx.Dialog):
                 with open(export_file_name, r"w") as fp:
                     logger.info(f"Exporting layout from {export_file_name}")
                     layout = get_layout()
-                    yaml.dump(layout, fp, Dumper)
+                    pprint(layout, fp)
             except Exception as e:
                 debug_dialog(f"Failed to write {export_file_name}!!", e)
         self.Destroy()
