@@ -115,6 +115,9 @@ def apply_layout(layout):
 
     pcb = pcbnew.GetBoard()
 
+    for d in pcb.GetDrawings():
+        pcb.Remove(d)
+
     try:
         x0, y0 = layout['origin']
     except KeyError:
@@ -183,6 +186,15 @@ def apply_layout(layout):
         if 'rotation' in props:
             rotation = props['rotation']
             mod.SetOrientationDegrees(rotation)
+
+        if 'area' in props:
+            area = props['area']
+            rect = pcbnew.PCB_SHAPE(pcb)
+            rect.SetLayer(pcbnew.F_SilkS)
+            rect.SetShape(pcbnew.SHAPE_T_RECT)
+            rect.SetStart(pcbnew.VECTOR2I_MM(x0+area[0], y0+area[1]))
+            rect.SetEnd(pcbnew.VECTOR2I_MM(x0+area[2], y0+area[3]))
+            pcb.Add(rect)
 
     pcbnew.Refresh()
 
