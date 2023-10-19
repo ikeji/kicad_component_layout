@@ -1,19 +1,21 @@
 """Allows controlling the location and footprint assignment of components from a 
-layout.yaml file
+layout.py file
 
 Example file: 
 
-    origin: [x0, y0] # Offset applied to all component locations
-    components:
-        R1: 
-            location: [x, y] # mm
-            rotation: [r] # degrees
-            flipped: false
-            footprint: 
-                path: path/to/library.pretty
-                name: SomeFootprint
-        J1: 
-            ...
+    {'origin': [100,100], # Offset applied to all component locations
+     'components': {
+       'R1': {
+         'location': [10, 10], # x,y mm
+         'rotation': 180.0, # r degrees (float)
+         'flip': False,
+         'footprint': {
+           'path': 'path/to/library.pretty',
+           'name': 'SomeFootPrint'
+         }
+       },
+       'J1':
+         ...
 
 All the fields are optional for each component (e.g. leave footprint unspecified 
 to leave the footprint unchanged)
