@@ -198,6 +198,55 @@ def apply_layout(layout):
             rect.SetEnd(pcbnew.VECTOR2I_MM(x0+area[2], y0+area[3]))
             pcb.Add(rect)
 
+    # Put line to Edge_Cuts layer.
+    # {
+    #   'outline': [
+    #     [ [ x1, y1 ], [ x2, y2 ] ],  # a line
+    #     [ [ x2, y2 ], [ x3, y3 ] ],  # another line
+    #     ...
+    #   ],
+    # }
+    for l in layout.get('outline', []):
+        line = pcbnew.PCB_SHAPE(pcb)
+        line.SetLayer(pcbnew.Edge_Cuts)
+        line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        line.SetStart(pcbnew.VECTOR2I_MM(x0+l[0][0], y0+l[0][1]))
+        line.SetEnd(pcbnew.VECTOR2I_MM(x0+l[1][0], y0+l[1][1]))
+        pcb.Add(line)
+
+    # Put line to F_SilkS layer.
+    for l in layout.get('silk', []):
+        line = pcbnew.PCB_SHAPE(pcb)
+        line.SetLayer(pcbnew.F_SilkS)
+        line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        line.SetStart(pcbnew.VECTOR2I_MM(x0+l[0][0], y0+l[0][1]))
+        line.SetEnd(pcbnew.VECTOR2I_MM(x0+l[1][0], y0+l[1][1]))
+        pcb.Add(line)
+
+    # Put line to B_SilkS layer.
+    for l in layout.get('silkb', []):
+        line = pcbnew.PCB_SHAPE(pcb)
+        line.SetLayer(pcbnew.B_SilkS)
+        line.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        line.SetStart(pcbnew.VECTOR2I_MM(x0+l[0][0], y0+l[0][1]))
+        line.SetEnd(pcbnew.VECTOR2I_MM(x0+l[1][0], y0+l[1][1]))
+        pcb.Add(line)
+
+    # Put label on F_SilkS layer
+    # {
+    #   'labels': [
+    #     { "text": "foo", "pos": [x, y] },  # a label
+    #     ...
+    #   ],
+    # }
+    for l in layout.get('labels', []):
+        text = pcbnew.PCB_TEXT(pcb)
+        text.SetX(pcbnew.FromMM(x0+l['pos'][0]))
+        text.SetY(pcbnew.FromMM(y0+l['pos'][1]))
+        text.SetText(l['text'])
+        text.SetLayer(pcbnew.F_SilkS)
+        pcb.Add(text)
+
     pcbnew.Refresh()
 
 
@@ -230,7 +279,7 @@ class ImportExportDialog(wx.Dialog):
                 toolTip="Browse for file or enter file name.",
                 dialogTitle="Select file to import/export part placement",
                 startDirectory=get_project_directory(),
-                initialValue="",
+                initialValue="place.py",
                 fileMask="Part Placement File|*.py|All Files|*.*",
                 fileMode=wx.FD_OPEN,
                 size=wx.Size(500, 50)

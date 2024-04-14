@@ -8,8 +8,12 @@ This ([ikeji/kicad_component_layout](https://github.com/ikeji/kicad_component_la
 
 This fork contains these changes:
 
-- Support latest KiCAD (tested at 7.0.8)
+- Support latest KiCAD (tested at 8.0.1)
 - Use python's dict literal instead of yaml (to avoid dependency to pyyaml).
+- Draw lines in Silk layer for each component.
+- Draw independent lines in Edge Cuts layer.
+- Draw independent lines in Silk layer.
+- Draw independent labels in Silk layer.
 
 ## How to install
 
